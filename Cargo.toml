@@ -1,5 +1,5 @@
 [package]
-name = "snarkos"
+name = "snarkos320"
 version = "3.2.0"
 authors = [ "The Aleo Team <hello@aleo.org>" ]
 description = "A decentralized operating system"
@@ -52,7 +52,7 @@ version = "=1.2.1"
 features = [ "circuit", "console", "rocks" ]
 
 [[bin]]
-name = "snarkos"
+name = "snarkos320"
 path = "snarkos/main.rs"
 
 [features]
