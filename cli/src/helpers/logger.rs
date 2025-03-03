@@ -160,6 +160,6 @@ pub fn welcome_message() -> String {
 "#
     .white()
     .bold();
-    output += &"👋 Welcome to Aleo! We thank you for running a node and supporting privacy.\n".bold();
+    output += &"👋 Welcome to Aleo 3.3.1f! We thank you for running a node and supporting privacy.\n".bold();
     output
 }
