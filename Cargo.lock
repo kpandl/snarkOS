@@ -3381,32 +3381,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "snarkos"
-version = "3.3.2"
-dependencies = [
- "anyhow",
- "built",
- "clap",
- "crossterm",
- "once_cell",
- "rusty-hook",
- "snarkos-account",
- "snarkos-cli",
- "snarkos-display",
- "snarkos-node",
- "snarkos-node-bft",
- "snarkos-node-cdn",
- "snarkos-node-consensus",
- "snarkos-node-metrics",
- "snarkos-node-rest",
- "snarkos-node-router",
- "snarkos-node-sync",
- "snarkos-node-tcp",
- "tikv-jemallocator",
- "walkdir",
-]
-
-[[package]]
 name = "snarkos-account"
 version = "3.3.2"
 dependencies = [
@@ -3806,6 +3780,32 @@ dependencies = [
  "tokio",
  "tokio-util",
  "tracing",
+]
+
+[[package]]
+name = "snarkos331f2"
+version = "3.3.2"
+dependencies = [
+ "anyhow",
+ "built",
+ "clap",
+ "crossterm",
+ "once_cell",
+ "rusty-hook",
+ "snarkos-account",
+ "snarkos-cli",
+ "snarkos-display",
+ "snarkos-node",
+ "snarkos-node-bft",
+ "snarkos-node-cdn",
+ "snarkos-node-consensus",
+ "snarkos-node-metrics",
+ "snarkos-node-rest",
+ "snarkos-node-router",
+ "snarkos-node-sync",
+ "snarkos-node-tcp",
+ "tikv-jemallocator",
+ "walkdir",
 ]
 
 [[package]]
