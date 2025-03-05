@@ -455,7 +455,7 @@ impl<N: Network> Primary<N> {
                     "Primary is safely skipping a batch proposal for round {round} {}",
                     "(please connect to more validators)".dimmed()
                 );
-                trace!("Primary is connected to {} validators", connected_validators.len() - 1);
+                trace!("kp! Primary is connected to {} validators", connected_validators.len() - 1);
                 return Ok(());
             }
         }

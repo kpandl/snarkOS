@@ -933,7 +933,7 @@ impl<N: Network> Gateway<N> {
         // Resolve the total number of connectable validators.
         let validators_total = self.ledger.current_committee().map_or(0, |c| c.num_members().saturating_sub(1));
         // Format the total validators message.
-        let total_validators = format!("(of {validators_total} bonded validators)").dimmed();
+        let total_validators = format!("(of {validators_total} bonded validators kp!)").dimmed();
         // Construct the connections message.
         let connections_msg = match connected_validators.len() {
             0 => "No connected validators".to_string(),
