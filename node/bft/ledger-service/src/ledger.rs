@@ -375,7 +375,7 @@ impl<N: Network, C: ConsensusStorage<N>> LedgerService<N> for CoreLedgerService<
             metrics::update_block_metrics(block);
         }
 
-        tracing::info!("\n\nAdvanced to block {} at round {} - {}\n", block.height(), block.round(), block.hash());
+        tracing::info!("\n\nAdvanced2 to block {} at round {} - {}\n", block.height(), block.round(), block.hash());
         Ok(())
     }
 
