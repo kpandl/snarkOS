@@ -393,7 +393,7 @@ impl<N: Network, C: ConsensusStorage<N>> LedgerService<N> for CoreLedgerService<
                 let (_, (storage_cost, synthesis_cost, _)) = deployment_cost(deployment)?;
                 storage_cost
                     .checked_add(synthesis_cost)
-                    .ok_or(anyhow!("The storage and synthesis cost computation overflowed for a deployment"))
+                    .ok_or(anyhow!("The storage and synthesis cost computation overflowed for a deploymenta"))
             }
             // Include the finalize cost and storage cost for executions.
             Transaction::Execute(_, _, execution, _) => {
