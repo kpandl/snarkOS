@@ -533,9 +533,6 @@ impl Start {
         // Parse the development configurations.
         self.parse_development(&mut trusted_peers, &mut trusted_validators)?;
 
-        // Parse the CDN.
-        let cdn = self.parse_cdn::<N>();
-
         // Parse the genesis block.
         let genesis = self.parse_genesis::<N>()?;
         // Parse the private key of the node.
@@ -592,6 +589,9 @@ impl Start {
         if self.metrics {
             metrics::initialize_metrics(self.metrics_ip);
         }
+
+        // Parse the CDN.
+        let cdn = self.parse_cdn::<N>();
 
         // Initialize the storage mode.
         let storage_mode = match &self.storage {
