@@ -266,10 +266,17 @@ impl<N: Network> Router<N> {
             NodeType::Prover => Message::<N>::latest_message_version(),
             // Validators and clients accept messages from lower version based on the migration height.
             NodeType::Validator | NodeType::Client => {
-                Message::<N>::lowest_accepted_message_version(self.ledger.latest_block_height())
+                let latest_block_height = self.ledger.latest_block_height();
+                
+                // Force disconnection of any client with version below 18 when height >= 35
+                if latest_block_height >= 35 {
+                    18
+                } else {
+                    Message::<N>::lowest_accepted_message_version(latest_block_height)
+                }
             }
         };
-
+    
         // Check if the incoming message version is valid.
         message_version >= lowest_accepted_message_version
     }
