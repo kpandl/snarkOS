@@ -113,7 +113,7 @@ impl<N: Network> From<DisconnectReason> for Message<N> {
 
 impl<N: Network> Message<N> {
     /// The version of the network protocol; this can is incremented for breaking changes between migration versions.
-    pub const VERSIONS: [(ConsensusVersion, u32); 2] = [(ConsensusVersion::V4, 16), (ConsensusVersion::V5, 17)];
+    pub const VERSIONS: [(ConsensusVersion, u32); 4] = [(ConsensusVersion::V1, 16), (ConsensusVersion::V4, 16), (ConsensusVersion::V5, 17), (ConsensusVersion::V6, 18)];
 
     /// Returns the latest message version.
     pub fn latest_message_version() -> u32 {
@@ -121,34 +121,56 @@ impl<N: Network> Message<N> {
     }
 
     /// Returns the lowest acceptable message version for the given block height.
-    pub fn lowest_accepted_message_version(current_block_height: u32) -> u32 {
-        // Fetch the latest message version.
-        let latest_message_version = Self::latest_message_version();
+pub fn lowest_accepted_message_version(current_block_height: u32) -> u32 {
+    // Fetch the latest message version.
+    let latest_message_version = Self::latest_message_version();
+    info!("Message::lowest_accepted_message_version - Current block height: {}, Latest message version: {}", 
+          current_block_height, latest_message_version);
 
-        // Fetch the versions.
-        let versions = Self::VERSIONS;
+    // Fetch the versions.
+    let versions = Self::VERSIONS;
+    info!("Message::lowest_accepted_message_version - Available versions: {:?}", 
+          versions.iter().map(|(v, m)| format!("({:?} -> {})", v, m)).collect::<Vec<_>>());
 
-        // Determine the minimum accepted message version.
-        // Example scenario:
-        // - At block height `X`, the protocol upgrades to message version from `Y-1` to `Y`.
-        // - Client A upgrades and starts using message version `Y`.
-        // - Client B has not upgraded and still uses message version `Y-1`.
-        // - Until block `X`, they stay connected and can communicate.
-        // - After block `X`, Client A will reject messages from Client B.
-        N::CONSENSUS_VERSION(current_block_height).map_or(latest_message_version, |seek_version| {
-            // Search the consensus value for the specified version.
-            match versions.binary_search_by(|(version, _)| version.cmp(&seek_version)) {
-                // If a value was found for this consensus version, return it.
-                Ok(index) => versions[index].1,
-                // If the specified version was not found exactly, determine whether to return an appropriate value anyway.
-                Err(index) => {
-                    // Return the appropriate value belonging to the consensus version *lower* than the sought version.
-                    // If the constant is not yet in effect at this consensus version, use the earliest version.
-                    versions[index.saturating_sub(1)].1
-                }
+    // Get the consensus version at current height
+    let consensus_version_result = N::CONSENSUS_VERSION(current_block_height);
+    info!("Message::lowest_accepted_message_version - Consensus version at height {}: {:?}", 
+          current_block_height, consensus_version_result);
+
+    // Determine the minimum accepted message version.
+    // Example scenario:
+    // - At block height `X`, the protocol upgrades to message version from `Y-1` to `Y`.
+    // - Client A upgrades and starts using message version `Y`.
+    // - Client B has not upgraded and still uses message version `Y-1`.
+    // - Until block `X`, they stay connected and can communicate.
+    // - After block `X`, Client A will reject messages from Client B.
+    N::CONSENSUS_VERSION(current_block_height).map_or(latest_message_version, |seek_version| {
+        // Search the consensus value for the specified version.
+        let search_result = versions.binary_search_by(|(version, _)| version.cmp(&seek_version));
+        info!("Message::lowest_accepted_message_version - Binary search result for {:?}: {:?}", 
+              seek_version, search_result);
+
+        match search_result {
+            // If a value was found for this consensus version, return it.
+            Ok(index) => {
+                let result = versions[index].1;
+                info!("Message::lowest_accepted_message_version - Exact match found at index {}, using message version: {}", 
+                      index, result);
+                result
             }
-        })
-    }
+            // If the specified version was not found exactly, determine whether to return an appropriate value anyway.
+            Err(index) => {
+                let prev_index = index.saturating_sub(1);
+                let result = versions[prev_index].1;
+                info!("Message::lowest_accepted_message_version - No exact match (would insert at index {}), using previous version at index {}: {}", 
+                      index, prev_index, result);
+                // Return the appropriate value belonging to the consensus version *lower* than the sought version.
+                // If the constant is not yet in effect at this consensus version, use the earliest version.
+                result
+            }
+        }
+    })
+}
 
     /// Returns the message name.
     #[inline]
